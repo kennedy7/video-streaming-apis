@@ -1,14 +1,7 @@
-require('dotenv').config()
-const router = require('express').Router()
-const fs = require('fs');
-const mongodb = require ('mongodb')
 const url ='mongodb://localhost:27017';
-
-router.get("/", (req, res) => {
-    res.sendFile(__dirname + "/index.html")
-})
-
-router.get('/init-video', (req, res)=>{
+const fs = require('fs');
+const mongodb = require ('mongodb');
+exports.uploadVideo =  (req, res)=>{
     mongodb.MongoClient.connect(url, (error, client)=>{
         if(error){ res.json(error)
         return
@@ -20,9 +13,9 @@ router.get('/init-video', (req, res)=>{
     videoReadStream.pipe(videoUploadStream)
     res.status(200).send('Done..')
     })
-})
+}
 
-router.get('/cloud-video', (req, res) => {
+exports.mongoVideos = (req, res) => {
     mongodb.MongoClient.connect(url, (error, client)=>{
         if(error){ res.json(error)
         return
@@ -35,7 +28,8 @@ router.get('/cloud-video', (req, res) => {
         return;
     }
     const db = client.db('videos')
-    db.collection('fs.files').findOne({}, (err, video)=>{
+    console.log(req.params.id);
+    db.collection('fs.files').findOne({_id:mongoose.Types.ObjectId(req.params.id)}, (err, video)=>{
         if(!video){
             res.status(404).send('No video uploaded');
             return;
@@ -59,9 +53,8 @@ router.get('/cloud-video', (req, res) => {
     downloadStream.pipe(res)
 })
 }) 
-})
-
-router.get('/video', (req, res) => {
+}
+exports.localVideos =  (req, res) => {
     res.setHeader('Accept-Ranges', 'bytes')
     res.setHeader('Content-Type', 'video/mp4')
     const range = req.headers.range;
@@ -69,7 +62,7 @@ router.get('/video', (req, res) => {
         res.status(400).send("Requires Range header");
         return;
     }
-    const videoPath = './Static_vs_Dynamic_API.mp4';
+    const videoPath = 'public/videos/Static_vs_Dynamic_API.mp4';
     const videoSize = fs.statSync(videoPath).size;
     const chunkSize = 10 ** 6; // 1MB
 
@@ -87,10 +80,8 @@ router.get('/video', (req, res) => {
     res.writeHead(206, headers)
 
     const stream = fs.createReadStream(videoPath, {
-        start,
-        end
+        start
     })
     stream.pipe(res)
 
-})
-module.exports = router;
+}
