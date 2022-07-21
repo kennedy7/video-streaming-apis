@@ -44,6 +44,5 @@ function initialize(passport) {
       done(err, user);
     });
   });
-
 }
 module.exports = initialize;

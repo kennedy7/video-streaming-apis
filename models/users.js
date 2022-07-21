@@ -4,18 +4,22 @@ const bcrypt = require('bcrypt');
 const UserSchema = new Schema({
   email: {
     type: String,
+    required: true
   },
   first_name: {
     type: String,
+    required: true
   },
   last_name: {
     type: String,
   },
   password: {
     type: String,
+    required: true
   },
   passwordConfirm: {
     type: String,
+    required: true
   },
 subscribers: [], 
 subscriptions: [], 
@@ -46,5 +50,5 @@ UserSchema.methods.comparePassword = async function (inputPassword) {
 };
 
 
-module.exports.User = model('User', UserSchema);
+ module.exports = model('User', UserSchema);
 
