@@ -1,12 +1,11 @@
-const express = require ('express')
+const express = require('express')
 const app = express()
 const port =  process.env.PORT  || 3002
 const session = require('express-session')
 const flash = require('express-flash')
 const bodyParser = require ("body-parser");
 const dbSetup = require('./db')
-// const User = require ("./models/users");
-const router = require("./routes/userRoutes");
+const userRoutes = require ('./routes/userRoutes');
 const Vrouter = require ("./routes/videoRoutes");
 const passport = require("passport")
 const initializePassport = require("./passportConfig");
@@ -34,11 +33,15 @@ app.use(passport.session());
 
 app.use(flash())
 
-
+app.use('/auth/login', userRoutes);
 app.use(express.json());
-app.use(router);
+app.use(userRoutes);
 app.use(Vrouter);
 // app.use(User)
+app.post('/login', passport.authenticate('local', { failureRedirect: '/' }), function (req, res) {
+  console.log(req.user)
+  res.redirect('/signup');
+});
 
 
 app.listen(port, ()=>{
