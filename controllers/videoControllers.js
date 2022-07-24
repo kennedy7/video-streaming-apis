@@ -62,7 +62,7 @@ exports.localVideos =  (req, res) => {
         res.status(400).send("Requires Range header");
         return;
     }
-    const videoPath = 'public/videos/Static_vs_Dynamic_API.mp4';
+    const videoPath = 'public/assets/videos/Static_vs_Dynamic_API.mp4';
     const videoSize = fs.statSync(videoPath).size;
     const chunkSize = 10 ** 6; // 1MB
 

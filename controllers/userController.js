@@ -1,7 +1,7 @@
 const{User} = require("../models/users");
 const passport = require("passport");
-const bcrypt = require ('bcrypt')
-const initialize = require('../passportConfig')
+
+
 exports.registerUser = async (req, res, next) => {
     const { first_name, last_name, email, password, passwordConfirm, } = req.body;
     console.log({ first_name, last_name, email, password, passwordConfirm});
@@ -17,7 +17,7 @@ exports.registerUser = async (req, res, next) => {
           if (password != passwordConfirm) {
             errs.push({ message:  "passwords do not match"})
           }
-          const existingUser = await User.findOne({ email : email })
+          const existingUser = await User.findOne({ email: email })
             if (existingUser){
                 errs.push({ message:  "This email is already registered"})
             }
@@ -33,13 +33,6 @@ exports.registerUser = async (req, res, next) => {
                 password,
                 passwordConfirm,
             })
-                     bcrypt.genSalt(10, (err, salt) =>
-            bcrypt.hash(user.password, salt,
-                (err, hash) => {
-                    if (err) throw err;
-                    user.password = hash;
-
-                }));
             console.log(user)
             await user.save(user, (err, user) => {
                 if (err) {
@@ -51,12 +44,13 @@ exports.registerUser = async (req, res, next) => {
                     res.redirect("/login");
                     console.log('success')
                     console.log(user)
+                   
                 }
             })
-        
-    }catch (err) {
+        }catch (err) {
        next(err)
-    }  
+    }
+    
 }
 }
 
@@ -65,10 +59,10 @@ exports.logoutUser = function (req, res) {
     res.redirect("/");
 }
 
-exports.loginUser =function (req, res, next) {
+exports.loginUser =function (req, res) {
     passport.authenticate('local', {
-        successRedirect: '/',
-        failureRedirect: '/logout',
+        successRedirect: '/video',
+        failureRedirect: '/login',
         failureFlash: true
-    }, initialize)
+    })
 }

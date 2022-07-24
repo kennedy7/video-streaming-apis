@@ -1,13 +1,27 @@
-const router = require('express').Router()
+const userRouter = require('express').Router()
+const passport = require ('passport')
 const {registerUser} = require ('../controllers/userController')
 
-router.get('/signup', (req, res)=>{
+userRouter.get('/signup', (req, res)=>{
     res.render('register')
 })
 
-router.post('/signup', registerUser )
+userRouter.post('/signup', registerUser )
 
-router.get('/login', (req, res)=>{
+userRouter.get('/login', (req, res)=>{
  res.render('login')
 })
-module.exports = router;
+userRouter.post('/login', 
+    passport.authenticate('local', {
+        successRedirect: '/',
+        failureRedirect: '/login',
+        failureFlash: true
+    })
+)
+
+module.exports = userRouter;
+
+// exports.logoutUser = function (req, res) {
+//     req.logout();
+//     res.redirect("/");
+// }

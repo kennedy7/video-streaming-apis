@@ -19,7 +19,6 @@ const UserSchema = new Schema({
   },
   passwordConfirm: {
     type: String,
-    required: true
   },
 subscribers: [], 
 subscriptions: [], 
@@ -50,5 +49,5 @@ UserSchema.methods.comparePassword = async function (inputPassword) {
 };
 
 
- module.exports = model('User', UserSchema);
+ module.exports.User = model('User', UserSchema);
 
